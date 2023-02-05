@@ -1,4 +1,6 @@
-﻿namespace simple_test;
+﻿using System.Reflection;
+
+namespace simple_test;
 
 public class ModelBuilder
 {
@@ -26,74 +28,18 @@ public class ModelBuilder
         foreach (var model in Models)
         {
             _fileLineList.Add(string.Format(Fields.ClassDefinition, model.TableName));
-            _fileLineList.Add(Fields.NewLineWithTab);
-            _fileLineList.Add(Fields.PrimaryKey);
+            _fileLineList.Add(Fields.Tab + String.Format(Fields.PrimaryKey, model.TableName.ToLower()));
             foreach (var field in model.Properties)
-                switch (field.FieldType)
-                {
-                    case "Text":
-                        _fileLineList.Add(string.Format(Fields.TextField, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Varchar32":
-                        _fileLineList.Add(string.Format(Fields.Varchar32, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Varchar64":
-                        _fileLineList.Add(string.Format(Fields.Varchar64, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Varchar128":
-                        _fileLineList.Add(string.Format(Fields.Varchar128, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Varchar256":
-                        _fileLineList.Add(string.Format(Fields.Varchar256, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Integer":
-                        _fileLineList.Add(string.Format(Fields.Integer, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Boolean":
-                        _fileLineList.Add(string.Format(Fields.Boolean, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Double":
-                        _fileLineList.Add(string.Format(Fields.Double, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Date":
-                        _fileLineList.Add(string.Format(Fields.Date, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "DateTime":
-                        _fileLineList.Add(string.Format(Fields.DateTime, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "Email":
-                        _fileLineList.Add(string.Format(Fields.Email, NormalizeFieldName(field.Name)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "OneToOne":
-                        _fileLineList.Add(string.Format(Fields.OneToOne, NormalizeFieldName(field.Name),
-                            NormalizeClassName(model.ToFieldRelation)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "ForeignKey":
-                        _fileLineList.Add(string.Format(Fields.ForeignKey, NormalizeFieldName(field.Name),
-                            NormalizeClassName(model.ToFieldRelation)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                    case "ManyToMany":
-                        _fileLineList.Add(string.Format(Fields.ManyToMany, NormalizeFieldName(field.Name),
-                            NormalizeClassName(model.ToFieldRelation)));
-                        _fileLineList.Add(Fields.NewLine);
-                        break;
-                }
+            {
+                _fileLineList.Add(Fields.Tab +
+                                  String.Format(
+                                      typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static)
+                                          .First(c => c.Name == field.FieldType).GetValue(null).ToString(),
+                                      NormalizeFieldName(field.Name),
+                                      NormalizeClassName(model.ToFieldRelation))
+                );
+            }
         }
-
-        _fileLineList.Add(Fields.NewLine);
         SaveToFile();
     }
 
