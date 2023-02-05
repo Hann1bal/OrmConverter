@@ -45,7 +45,7 @@ public class ModelBuilder
 
     private void SaveToFile()
     {
-        using var writer = new StreamWriter("C:\\Users\\Andrey\\models.py");
+        using var writer = new StreamWriter(Fields.Path);
         foreach (var line in _fileLineList) writer.WriteLine(line);
     }
 

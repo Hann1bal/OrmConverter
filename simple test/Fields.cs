@@ -24,6 +24,7 @@ public class Fields
     public static readonly string NewLine = "\n";
     public static readonly string Tab = "\t";
     public static readonly string NewLineWithTab = "\n \t";
+    public static readonly string Path = "models.py";
 }
 
 enum DbValuesTypes : byte

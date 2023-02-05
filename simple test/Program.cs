@@ -21,22 +21,19 @@ namespace simple_test;
 		EMAIL(" = models.EmailField(max_length=254)");
 */
 
-internal sealed class Program
+sealed class Program
 {
-
     private static void Main(string[] args)
     {
         var sourceData =
             "{\"person\": {" +
             "\"firstname\": \"John\", \"lastname\": \"Doe\", \"Address\": {" +
             "\"city\": \"Yaound\", \"postcode\": \"BP:324\"}, \"visitedcities\":" +
-            " [{\"name\": \"Yaounde\", \"country\": \"Cameroon\"}, {\"name\": \"Douala\", \"country\": \"Cameroon\", \"innerlist\":{\"asdasd\":\"asd\"}}," +
+            " [{\"name\": \"Yaounde\", \"country\": \"Cameroon\"}, {\"name\": \"Douala\", \"country\": \"Cameroon\"}," +
             " {\"name\": \"Bafoussam\", \"country\": \"Cameroon\"}], \"dob\": \"10-10-2000\", \"roomnumber\": 1, \"loveSummer\": \"false\"}}";
 
         var jsonParsed = JsonConvert.DeserializeObject<dynamic>(sourceData);
         var parser = new Parser();
         parser.Run(jsonParsed);
     }
-
-    
 }
