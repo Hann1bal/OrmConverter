@@ -7,83 +7,44 @@ JSON:
   "person": {
     "first Name": "John",
     "last Name": "Doe",
-    "sds": [
-      1,
-      2,
-      2,
-      3,
-      4,
-      5,
-      6
-    ],
+    "sds": [1, 2, 2, 3, 4, 5, 6],
     "Address": {
       "city": "Yaoundé",
       "post code": "BP:324",
-      "sds": [
-        1,
-        2,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "sds": [1, 2, 2, 3, 4, 5, 6],
       "FirstInner": {
         "asdasdasd": 1,
         "asdasd32": 132,
-        "sds": [
-          1,
-          2,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-        "SecondInner": [
-          {
+       "sds": [1, 2, 2, 3, 4, 5, 6],
+        "SecondInner": [{
             "asd22": "asdasd",
             "asd25": 1,
-            "asd27": [
-              "asd",
-              "asdasd",
-              "asdasdasd",
-              "asdasda"
-            ]
-          },
-          {
+            "asd27": ["asd", "asdasd", "asdasdasd", "asdasda"]
+          },{
             "asd22": "asdasd",
             "asd25": 1,
-            "asd27": [
-              "asd",
-              "asdasd",
-              "asdasdasd",
-              "asdasda"
-            ]
-          }
-        ]
+            "asd27": ["asd", "asdasd", "asdasdasd", "asdasda"]
+          }]
       }
     },
-    "visited cities": [
-      {
+    "visited cities": [{
         "name": "Yaounde",
         "country": "Cameroon"
-      },
-      {
+      },{
         "name": "Douala",
         "country": "Cameroon"
-      },
-      {
+      },{
         "name": "Bafoussam",
         "country": "Cameroon"
-      }
-    ],
+      }],
     "dob": "10-10-2000",
     "room number": 23,
     "loveSummer": "false"
   }
-}```
-DJANGO Orm: 
+}
+```
+
+# Django Orm: 
 ```python
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
