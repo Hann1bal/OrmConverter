@@ -9,19 +9,23 @@ public class ModelBuilder
     private readonly List<string> _fileLineList = new();
     private readonly List<Model> Models = new();
 
-    public void AddTable(string? TableName, Dictionary<string, string?> propertiesList, string toTableRelation = null,
-        Enum relationTypes = null)
+    public void AddTable(string? tableName, Dictionary<string, string?> propertiesList, string? toTableRelation = null, Enum? relationTypes = null)
     {
-        if (Models.Any(c => c.TableName == NormalizeClassName(TableName))) return;
-        var model = new Model
-        {
-            TableName = NormalizeClassName(TableName), Properties = new List<Properties>(),
-            ToFieldRelation = toTableRelation, DbRelationTypes = relationTypes
-        };
-        foreach (var property in propertiesList)
-            model.Properties.Add(new Properties { Name = property.Key, FieldType = property.Value });
-
-        Models.Add(model);
+        if (Models.Any(c => c.TableName == NormalizeClassName(tableName))) return;
+        Models.Add(
+            new Model
+            {
+                TableName = NormalizeClassName(tableName),
+                Properties = new List<Properties>(propertiesList.Select(c =>
+                    new Properties()
+                    {
+                        FieldType = c.Value,
+                        Name = c.Key
+                    }
+                ).ToList()),
+                ToFieldRelation = toTableRelation, DbRelationTypes = relationTypes,
+            }
+        );
     }
 
     public void GenerateModelsFile()
@@ -32,7 +36,7 @@ public class ModelBuilder
         foreach (var model in Models)
         {
             _fileLineList.Add(string.Format(Fields.ClassDefinition, model.TableName));
-            _fileLineList.Add($"{Fields.Tab}{string.Format(Fields.PrimaryKey, model.TableName.ToLower())}");
+            _fileLineList.Add($"{Fields.Tab}{string.Format(Fields.PrimaryKey, model.TableName?.ToLower())}");
             if (model.DbRelationTypes != null) _fileLineList.Add($"{Fields.Tab}{GetFullRelationString(model)}");
 
             foreach (var field in model.Properties)
@@ -41,11 +45,11 @@ public class ModelBuilder
                 );
             _fileLineList.Add(Fields.NewLine);
         }
+
         Console.WriteLine("Done");
         Console.WriteLine("Writing to file");
         SaveToFile();
         Console.WriteLine("Done");
-
     }
 
     private void SaveToFile()
@@ -63,44 +67,53 @@ public class ModelBuilder
 
     private static string GetFullString(Properties field, Model model)
     {
-        return string.Format(
-            field.FieldType.Contains("Array") ? GetArrayTypeOfFieldAsSting(field) : GetTypeOfFieldAsString(field),
-            NormalizeFieldName(field.Name), NormalizeClassName(model.ToFieldRelation));
+        return string.Format
+        (
+            field.FieldType.Contains("Array") 
+                ? GetArrayTypeOfFieldAsSting(field) 
+                : GetTypeOfFieldAsString(field),
+            NormalizeFieldName(field.Name),
+            NormalizeClassName(model.ToFieldRelation)
+        );
     }
 
     private static string GetArrayTypeOfFieldAsSting(Properties field)
     {
         var arrayType = field.FieldType?.Split("|").Last();
-        return string.Format(Fields.ArrayField, field.Name,
-            GetTypeOfFieldAsString(arrayType).Split("{0} = ").Last().Trim());
+        return string.Format
+        (
+            Fields.ArrayField,
+            field.Name,
+            GetTypeOfFieldAsString(arrayType).Split("{0} = ").Last().Trim()
+        );
     }
 
     private static string GetFullRelationString(Model model)
     {
-        return string.Format(GetTypeOfFieldAsString(model.DbRelationTypes), NormalizeFieldName(model.ToFieldRelation),
-            NormalizeClassName(model.ToFieldRelation));
+        return string.Format
+        (
+            GetTypeOfFieldAsString(model.DbRelationTypes),
+            NormalizeFieldName(model.ToFieldRelation),
+            NormalizeClassName(model.ToFieldRelation)
+        );
     }
 
     private static string? GetTypeOfFieldAsString(Properties field)
     {
-        return typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static).First(c => c.Name == field.FieldType)
-            .GetValue(null)
-            ?.ToString();
+        return typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static)
+            .FirstOrDefault(c => c.Name == field.FieldType)?.GetValue(null)?.ToString();
     }
 
     private static string? GetTypeOfFieldAsString(string field)
     {
-        return typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static).First(c => c.Name == field)
-            .GetValue(null)
-            ?.ToString();
+        return typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(c => c.Name == field)
+            ?.GetValue(null)?.ToString();
     }
 
     private static string? GetTypeOfFieldAsString(Enum field)
     {
         return typeof(Fields).GetFields(BindingFlags.Public | BindingFlags.Static)
-            .First(c => c.Name == Enum.GetName(typeof(DbRelationTypes), field))
-            .GetValue(null)
-            ?.ToString();
+            .FirstOrDefault(c => c.Name == Enum.GetName(typeof(DbRelationTypes), field))?.GetValue(null)?.ToString();
     }
 
     private static string NormalizeFieldName(string fieldName)
