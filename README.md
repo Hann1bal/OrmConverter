@@ -1,6 +1,7 @@
 # OrmConverter
 Convert Json to Django Orm model. 
 # Example: 
+Положить в корень файл в формате json с именем source.json
 JSON: 
 ```json
 {
