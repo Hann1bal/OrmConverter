@@ -2,20 +2,18 @@ what i have:
 from django.db import models
 
 
-class Address(models.Model):
-	id = models.AutoField(primary_key=True)
-	city = models.CharField(max_length=32)
-	postcode = models.CharField(max_length=32)
-class Visitedcities(models.Model):
-	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=32)
-	country = models.CharField(max_length=32)
-	name = models.CharField(max_length=32)
-	country = models.CharField(max_length=32)
+
 class Person(models.Model):
 	id = models.AutoField(primary_key=True)
-	firstname = models.CharField(max_length=32)
-	lastname = models.CharField(max_length=32)
+	first_name = models.CharField(max_length=32)
+	last_name = models.CharField(max_length=32)
+	dob = models.CharField(max_length=32)
+	room_number = models.IntegerField()
+	lovesummer = models.CharField(max_length=32)
+class Visitedcities(models.Model):
+	id = models.AutoField(primary_key=True)
+	city = models.CharField(max_length=32)
+	post_code = models.CharField(max_length=32)
 
 
 What i need:

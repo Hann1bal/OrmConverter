@@ -6,10 +6,17 @@
         <RootNamespace>simple_test</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Self-Contained</Configurations>
+        <Platforms>AnyCPU;win-x86</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Data\test.json" />
+        <None Remove="simple test.csproj.DotSettings" />
     </ItemGroup>
 
 </Project>
